@@ -94,7 +94,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.reactnavi12351253"
+        applicationId "com.reactnavi"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -145,6 +145,7 @@ android {
 }
 
 dependencies {
+    compile project(':realm')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { TabNavigator } from 'react-navigation';
-import XeMayStack from './XeMay.js';
+import XeMay from './XeMay.js';
 import XeTai from './XeTai.js';
 import XeOto from './XeOto.js';
 import XeKhach from './XeKhach.js';
-
-
+import ChiTiet from './ChiTiet.js'
 
 const TabHome = TabNavigator({
     ManHinhXeMay: {
-        screen: XeMayStack
+        screen: XeMay,
     },
-    ManHinhXeTai: { 
+    ManHinhXeTai: {
         screen: XeTai
     }
 },
@@ -23,12 +22,11 @@ const TabHome = TabNavigator({
             tabStyle: {
                 height: 40
             },
+
             indicatorStyle: {
                 borderBottomColor: '#ffffff',
                 borderBottomWidth: 2,
             },
-
-
         }
     }
 )
