@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
-import { Text,View } from 'react-native';
+import { Text, View } from 'react-native';
 import TabXe from './TabXe.js';
+import ChiTiet from './ChiTiet.js';
+import { StackNavigator } from 'react-navigation';
 
-export default class XeMay extends Component {
-    
+
+class XeMay extends Component {
+    static navigationOptions = {
+        header: null,
+    }
+    Click = (item) => { this.props.navigation.navigate('ChiTiet', { id: item.key, path: 'xemay.realm' }) }
     render() {
         return (
-            <TabXe screenProps ='xemay'/> 
+            <TabXe loaixe='xemay' onPress={this.Click} />
         );
     }
 }
 
-
+export default XeMay = StackNavigator({
+    XeMay: { screen: XeMay },
+    ChiTiet: {
+        screen: ChiTiet, navigationOptions: {
+            tabBarVisible: false,
+        }
+    }
+})
 
 
 
@@ -108,7 +121,7 @@ export default class XeMay extends Component {
 //                     />
 
 
-                
+
 //                 <Text>afsdfsa</Text>
 //             </View>
 //         );

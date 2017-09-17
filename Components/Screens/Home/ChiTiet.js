@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import Realm from 'realm';
-const HotlineSchema = { name: 'DuongDayNong', properties: { key: 'int', ten_tinh: 'string', sdt_tinh: 'string' } }
+import { HotlineSchema, LoiSchema } from './Schema.js'
 
 
 export default class ChiTiet extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            key: '',
-            aaa: ''
+            chitiet: ''
         }
     }
     static tabBarOption = {
@@ -30,21 +29,23 @@ export default class ChiTiet extends Component {
         tabBarVisible: false,
     }
     componentDidMount() {
+        console.log(this.props)
         let {params} = this.props.navigation.state;
         let id = params.id;
-        Realm.open({ schema: [HotlineSchema], path: 'huy.realm' }).then((realm) => {
+        let path = params.path
+        Realm.open({ schema: [LoiSchema], path: path }).then((realm) => {
             realm.write(() => {
-                let objs = realm.objects('DuongDayNong').filtered('key=' + id);
+                let objs = realm.objects('Loi').filtered('key=' + id);
                 this.setState({
-                    aaa: objs[0]
+                    chitiet: objs[0]
                 })
             })
         })
     }
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: 'yellow' }} chitietok='100'>
-                <Text>Man hinh ChiTiet - state:{this.state.aaa.sdt_tinh}</Text>
+            <View style={{ flex: 1, backgroundColor: 'yellow' }}>
+                <Text>Man hinh ChiTiet - state:{this.state.chitiet.ten_loi}</Text>
             </View>
         );
     }

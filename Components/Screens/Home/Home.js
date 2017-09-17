@@ -32,6 +32,8 @@ const TabHome = TabNavigator({
 )
 
 
+
+
 export default class Home extends Component {
 
     render() {

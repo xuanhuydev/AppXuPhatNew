@@ -1,11 +1,28 @@
 import React, { Component } from 'react';
-import { Text,View } from 'react-native';
+import { Text, View } from 'react-native';
 import TabXe from './TabXe.js';
+import ChiTiet from './ChiTiet.js';
+import { StackNavigator } from 'react-navigation';
 
-export default class XeTai extends Component {
+
+class XeTai extends Component {
+    static navigationOptions = {
+        header: null,
+    }
+    Click = (item) => { this.props.navigation.navigate('ChiTiet', { id: item.key }) }
+
     render() {
         return (
-            <TabXe screenProps ='xetai'/>
+            <TabXe loaixe='xetai' onPress={this.Click} />
         );
     }
 }
+
+export default XeMay = StackNavigator({
+    XeTai: { screen: XeTai },
+    ChiTiet: {
+        screen: ChiTiet, navigationOptions: {
+            tabBarVisible: false,
+        }
+    }
+})

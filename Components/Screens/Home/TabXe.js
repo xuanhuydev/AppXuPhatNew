@@ -2,46 +2,79 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, FlatList } from 'react-native';
 import ChiTiet from './ChiTiet.js';
 import { StackNavigator } from 'react-navigation';
-import Realm from 'realm'
+import Realm from 'realm';
+import { HotlineSchema, LoiSchema } from './Schema.js'
 
-const HotlineSchema = { name: 'DuongDayNong', properties: { key: 'int', ten_tinh: 'string', sdt_tinh: 'string' } }
-class TabXe extends Component {
+
+export default class TabXe extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            mang: [{ "key": 1, "ten_tinh": "T\u1ed5ng \u0111\u00e0i t\u01b0 v\u1ea5n giao th\u00f4ng", "sdt_tinh": "1088" }, { "key": 2, "ten_tinh": "C\u1ee5c c\u1ea3nh s\u00e1t giao th\u00f4ng \u0111\u01b0\u1eddng b\u1ed9", "sdt_tinh": "069.42608" }],
+            mang: [{ "key": 1, "ten_tinh": "T\u1ed5ng \u0111\u00e0i t\u01b0 v\u1ea5n giao th\u00f4ng", "sdt_tinh": "1088" }],
+            begin: 0,
+            end: 10
         }
     }
-    // an title cua StackNavigator
+    // an title cua StackNavigator 
     static navigationOptions = {
         header: null,
     }
-    Click(item) {
-        this.props.navigation.navigate('ChiTiet', { id: item.key })
-    }
+
     componentWillMount() {
+        loaixe = this.props.loaixe
+        console.log(LoiSchema)
         Realm.open({
-            schema: [HotlineSchema],
-            path: 'huy.realm'
+            schema: [LoiSchema],
+            path: loaixe + '.realm'
         }).then((realm) => {
-            let dogs = realm.objects('DuongDayNong');
-            if (dogs.length == 0) {
+            let Lois = realm.objects('Loi');
+            if (Lois.length == 0) {
                 console.log('loading.....')
-                fetch('http://192.168.8.2/xuphat/main.php')
+                fetch('http://192.168.8.2/xuphat/main.php?loaixe=' + loaixe)
                     .then((data) => data.json())
                     .then((dataJson) => {
                         dataJson.forEach((item) => {
                             realm.write(() => {
-                                realm.create('DuongDayNong', item)
-
+                                realm.create('Loi', item)
+                                console.log('Da them')
                             })
                         })
-
                     })
-                console.log('Da them du lieu vao Database')
+                    .then(() => {
+                        top10 = realm.objects('Loi').slice(this.state.begin, this.state.end)
+                        this.setState({
+                            mang: top10,
+                            begin: this.state.begin + 10,
+                            end: this.state.end + 10
+                        })
+                    })
+            } else {
+                top10 = realm.objects('Loi').slice(this.state.begin, this.state.end)
+                this.setState({
+                    mang: top10,
+                    begin: this.state.begin + 10,
+                    end: this.state.end + 10
+                })
             }
         })
+            .catch((e) => { console.log(e); alert('Yêu cầu internet ngay lần chạy đầu tiên') })
     }
+    // onEndReached = () => {
+    //     Realm.open({
+    //         schema: [LoiSchema],
+    //         path: loaixe + '.realm'
+    //     })
+    //         .then((realm) => {
+    //             top10 = realm.objects('Loi').slice(this.state.begin, this.state.end)
+    //             newmang = this.state.mang.push(top10)
+    //             this.setState({
+    //                 mang: newmang,
+    //                 begin: this.state.begin + 10,
+    //                 end: this.state.end + 10
+    //             })
+    //         })
+
+    // }
     render() {
         return (
             <View>
@@ -49,10 +82,17 @@ class TabXe extends Component {
                 <FlatList
                     data={this.state.mang}
                     renderItem={({item}) =>
-                        <TouchableOpacity onPress={() => { this.Click(item) } }>
-                            <Text style={{ backgroundColor: 'green', padding: 20, margin: 10 }}> {this.props.screenProps} {item.key}</Text>
+                        <TouchableOpacity onPress={() => { this.props.onPress(item) } }>
+                            <View style={{ backgroundColor: 'green', padding: 20, margin: 10 }}>
+                                <Text> {item.key}</Text>
+                                <Text> {item.ten_loi}</Text>
+                                <Text> {item.muc_phat}</Text>
+                            </View>
                         </TouchableOpacity>
                     }
+                    onEndReachedThreshold='0.2'
+                    onEndReached={this.onEndReached}
+
                     />
             </View>
         );
@@ -62,12 +102,12 @@ class TabXe extends Component {
 
 
 
-export default TabXe = StackNavigator({
-    TabXe: { screen: TabXe },
-    ChiTiet: { screen: ChiTiet,navigationOptions:{
-        tabBarVisible: false,
-    } }
-})
+// export default TabXe = StackNavigator({
+//     TabXe: { screen: TabXe },
+//     ChiTiet: { screen: ChiTiet,navigationOptions:{
+//         tabBarVisible: false,
+//     } }
+// })
 
 
 
