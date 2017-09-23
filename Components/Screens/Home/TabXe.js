@@ -12,7 +12,8 @@ export default class TabXe extends Component {
         this.state = {
             mang: [{ "key": 1, "ten_tinh": "T\u1ed5ng \u0111\u00e0i t\u01b0 v\u1ea5n giao th\u00f4ng", "sdt_tinh": "1088" }],
             begin: 0,
-            end: 10
+            end: 10,
+            fetching: true
         }
     }
     // an title cua StackNavigator 
@@ -59,22 +60,31 @@ export default class TabXe extends Component {
         })
             .catch((e) => { console.log(e); alert('Yêu cầu internet ngay lần chạy đầu tiên') })
     }
-    // onEndReached = () => {
-    //     Realm.open({
-    //         schema: [LoiSchema],
-    //         path: loaixe + '.realm'
-    //     })
-    //         .then((realm) => {
-    //             top10 = realm.objects('Loi').slice(this.state.begin, this.state.end)
-    //             newmang = this.state.mang.push(top10)
-    //             this.setState({
-    //                 mang: newmang,
-    //                 begin: this.state.begin + 10,
-    //                 end: this.state.end + 10
-    //             })
-    //         })
+    onEndReached = () => {
+        this.setState({
+            fetching: true
+        })
+        if (this.state.fetching) {
+            console.log('cham day')
+            Realm.open({
+                schema: [LoiSchema],
+                path: loaixe + '.realm'
+            })
+                .then((realm) => {
+                    top10 = realm.objects('Loi').slice(this.state.begin, this.state.end)
+                    newmang = this.state.mang.concat(top10)
+                    this.setState({
+                        mang: newmang,
+                        begin: this.state.begin + 10,
+                        end: this.state.end + 10
+                    })
+                })
+            this.setState({ fetching: false })
+        }
 
-    // }
+
+
+    }
     render() {
         return (
             <View>
@@ -90,7 +100,7 @@ export default class TabXe extends Component {
                             </View>
                         </TouchableOpacity>
                     }
-                    onEndReachedThreshold='0.2'
+                    onEndReachedThreshold={0.2}
                     onEndReached={this.onEndReached}
 
                     />

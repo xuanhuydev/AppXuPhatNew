@@ -18,7 +18,7 @@ class XeTai extends Component {
     }
 }
 
-export default XeMay = StackNavigator({
+export default XeTai = StackNavigator({
     XeTai: { screen: XeTai },
     ChiTiet: {
         screen: ChiTiet, navigationOptions: {
